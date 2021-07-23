@@ -39,7 +39,11 @@ pub fn (cd &Iconv) conv(inbuf []byte) []byte {
 		inptr := &inbuf[inbuf.len - int(inbytesleft)]
 		outptr := unsafe { &outbuf[0] }
 
-		C.iconv(cd.handle, &inptr, &inbytesleft, &outptr, &outbytesleft)
+		res := C.iconv(cd.handle, &inptr, &inbytesleft, &outptr, &outbytesleft)
+
+		if res == size_t(-1) {
+			panic('iconv: invalid input')
+		}
 
 		results << outbuf[0 .. outbuf.len - int(outbytesleft)]
 	}
