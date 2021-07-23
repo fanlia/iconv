@@ -2,6 +2,7 @@
 module iconv
 
 #include <iconv.h>
+#include <errno.h>
 
 fn C.iconv_open(tocode &char, fromcode &char) C.iconv_t
 
@@ -41,8 +42,8 @@ pub fn (cd &Iconv) conv(inbuf []byte) []byte {
 
 		res := C.iconv(cd.handle, &inptr, &inbytesleft, &outptr, &outbytesleft)
 
-		if res == size_t(-1) {
-			panic('iconv: invalid input')
+		if res == size_t(-1) && C.errno != C.E2BIG {
+			panic("iconv: invalid input")
 		}
 
 		results << outbuf[0 .. outbuf.len - int(outbytesleft)]
@@ -53,6 +54,7 @@ pub fn (cd &Iconv) conv(inbuf []byte) []byte {
 
 pub fn (cd &Iconv) conv_string(s string) string {
 	out := cd.conv(s.bytes())
+	if out.len == 0 { return '' }
 	return string(out)
 }
 
