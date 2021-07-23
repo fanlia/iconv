@@ -1,6 +1,12 @@
 # iconv
 iconv for vlang
 
+## Getting Started
+
+```sh
+v install fanlia.iconv
+```
+
 ## Usage
 
 ```v
@@ -19,3 +25,7 @@ fn main() {
 }
 
 ```
+
+## License
+
+MIT
